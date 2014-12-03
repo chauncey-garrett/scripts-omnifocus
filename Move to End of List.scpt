@@ -1,3 +1,7 @@
+--
+-- Move to bottom of list
+--
+
 tell application "OmniFocus"
 	tell content of document window 1 of default document
 		set taskList to get value of selected trees

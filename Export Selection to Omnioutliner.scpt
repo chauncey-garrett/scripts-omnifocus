@@ -20,7 +20,7 @@ property pFLAGGED : 8 as integer
 
 on run
 	set {lstActivities, blnContext} to SelectedInOF()
-	
+
 	PlaceInOO(lstActivities, blnContext)
 end run
 
@@ -41,14 +41,14 @@ on Tasks2OO(lstTasks, oParent)
 		tell oParent
 			repeat with oTask in lstTasks
 				set {strName, blnDone, lstChiln, strNote, strProjContext, dteStart, dteDue, dteDone, lngMins, blnFlagged} to oTask
-				
+
 				if length of strNote > 0 then
 					set recRow to {topic:strName, note:strNote, expanded:true}
 				else
 					set recRow to {topic:strName, expanded:true}
 				end if
 				if blnDone then set recRow to recRow & {state:checked}
-				
+
 				set oRow to make new row at end of children with properties recRow
 				tell oRow
 					if strProjContext is not missing value then set value of cell pColProjContext to strProjContext
@@ -58,7 +58,7 @@ on Tasks2OO(lstTasks, oParent)
 					if lngMins > 0 then set value of cell pDURATION to lngMins / 60
 					if blnFlagged then set state of cell pFLAGGED to checked
 				end tell
-				
+
 				if (length of lstChiln > 0) then my Tasks2OO(lstChiln, oRow)
 			end repeat
 		end tell
@@ -73,7 +73,7 @@ on MakeTaskDoc(blnContext)
 		set bounds of oWin to {0, 0, 1000, 500}
 		-- Create required columns
 		tell docTarget
-			
+
 			if blnContext then
 				make new column with properties {type:rich text, name:"Project"}
 			else
@@ -111,12 +111,12 @@ end SelectedInOF
 
 on Trees2List(oWin, lstTrees, blnContext, blnAll)
 	set lstTasks to {}
-	
+
 	using terms from application "OmniFocus"
 		repeat with oNode in lstTrees
 			set oValue to value of oNode
 			set cClass to class of oValue
-			
+
 			if cClass is not item then
 				if cClass is project then
 					set end of lstTasks to my ListProject(oNode, oValue, blnContext, blnAll)
@@ -167,13 +167,13 @@ on ListUnProcessed(oNode, oValue, blnContext, blnAll)
 	using terms from application "OmniFocus"
 		tell oNode
 			set lstChildren to trees
-			
+
 			if blnContext then
 				set strName to "No Context"
 			else
 				set strName to "Inbox"
 			end if
-			
+
 			tell oValue
 				if (count of lstChildren) > 0 then
 					{strName, false, my ListSubTrees(lstChildren, blnContext, blnAll), "", "", missing value, missing value, missing value, 0, false}
@@ -198,7 +198,7 @@ on ListTask(oNode, blnContext, blnAll)
 		tell oNode
 			set oTask to value of oNode
 			set lstSubTrees to trees of oNode
-			
+
 		end tell
 		if blnContext then
 			set oParent to containing project of oTask

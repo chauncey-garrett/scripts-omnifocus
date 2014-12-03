@@ -1,3 +1,7 @@
+--
+-- Move to top of list
+--
+
 tell application "OmniFocus"
 	tell content of document window 1 of default document
 		set taskList to get value of selected trees
@@ -8,4 +12,3 @@ tell application "OmniFocus"
 		end repeat
 	end tell
 end tell
-

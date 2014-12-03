@@ -1,3 +1,7 @@
+--
+-- Copy task outline to clipboard
+--
+
 tell application "OmniFocus"
 	tell first document window of front document
 		set selectedItems to selected trees of content
