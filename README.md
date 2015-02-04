@@ -10,12 +10,12 @@ noindex: false
 permalink: /projects/scripts/omnifocus/
 external-url:
 tags:
-- itunes
-- scripts
-- github
+  - itunes
+  - scripts
+  - github
 category: project
 description: Scripts for OmniFocus
-keywords: TODO
+keywords:
 sharing: true
 comments: false
 footer: true
