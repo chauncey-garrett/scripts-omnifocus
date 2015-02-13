@@ -24,11 +24,11 @@ footer: true
 * Table of Contents placeholder (via kramdown)
 {:toc}
 
-# Scripts for OmniFocus 2
+## Scripts for OmniFocus 2
 
 A curated collection of scripts (including AppleScripts) that I have either made and/or commandeered for OmniFocus 2.
 
-# Installation
+## Installation
 
 Fork the repository and do like so:
 
@@ -45,11 +45,11 @@ If you plan on contributing back to the repository, add the following to `.git/c
 ```
 
 
-# Like it?
+## Like it?
 
 If you have feature suggestions, please open an [issue](https://github.com/chauncey-garrett/scripts-sonos/issues "chauncey-garrett/scripts-sonos/issues"). If you have contributions, open a [pull request](https://github.com/chauncey-garrett/scripts-sonos/pull-request "chauncey-garrett/scripts-sonos/pulls"). I'd love to expand this library as much as is possible.
 
-# Author(s)
+## Author(s)
 
 Note that there are some scripts here that I did NOT make and have only curated within this repository. If you found a particular script useful that I did not author, please send your support to that particular person. To the best of my ability, appropriate licensing and authorship information is provided for those scripts which I have not written.
 
