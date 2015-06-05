@@ -1,29 +1,29 @@
-﻿(*
+(*
 	# DESCRIPTION #
-	
+
 	This script takes the currently selected actions or projects and sets them for action this weekend.
 	(If a weekend is currently in progress, the items will be set for the *current* weekend.)
-	
+
 	**IMPORTANT: The script will now always set a start date. Whether it sets a due date is up to you.
 	Change this setting with the setDueDate property below.**
-	
+
 	The dates and times are set by variables, so you can modify to meet your weekend.
-	
+
 	# LICENSE #
 
 	Copyright © 2010 Dan Byler (contact: dbyler@gmail.com)
 	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php)
-	
+
 
 	# CHANGE HISTORY #
-	
+
 	0.31 (2011-10-31)
 	-	Updated Growl code to work with Growl 1.3 (App Store version)
 	-	Updated tell syntax to call "first document window", not "front document window"
-	
+
 	0.3 (2011-08-30)
 	-	Rewrote notification code to gracefully handle situations where Growl is not installed
-	
+
 	0.2 (2011-07-07)
 	-	Setting a due date is now optional (see settings below)
 	-	No longer fails when a Grouping divider is selected
@@ -45,9 +45,9 @@
  	2. If desired, add to the OmniFocus toolbar using View > Customize Toolbar... within OmniFocus
 
 	# KNOWN BUGS #
-	
+
 	- When the script is invoked from the OmniFocus toolbar and canceled, OmniFocus returns an error. This issue does not occur when invoked from the script menu, a Quicksilver trigger, etc.
-		
+
 *)
 
 -- To change your weekend start/stop date/time, modify the following properties
@@ -83,7 +83,7 @@ on main()
 				my notify(alertName, alertTitle, alertText)
 				return
 			end if
-			
+
 			--Calculate due date
 			set dueDate to current date
 			set theTime to time of dueDate
@@ -92,13 +92,13 @@ on main()
 			end repeat
 			set dueDate to dueDate - theTime + weEndTime * hours
 			--set dueDate to dueDate + 1 * weeks --uncomment to use _next_ weekend instead
-			
+
 			--Calculate start date
 			set diff to weEndDay - weStartDay
 			if diff < 0 then set diff to diff + 7
 			set diff to diff * days + (weEndTime - weStartTime) * hours
 			set startDate to dueDate - diff
-			
+
 			--Perform action
 			set successTot to 0
 			set autosave to false
@@ -109,7 +109,7 @@ on main()
 			set autosave to true
 		end tell
 	end tell
-	
+
 	--Display summary notification
 	if showSummaryNotification then
 		if successTot > 1 then set alertItemNum to "s"
@@ -122,7 +122,7 @@ on setDate(selectedItem, startDate, dueDate)
 	set success to false
 	tell application "OmniFocus"
 		try
-			set start date of selectedItem to startDate
+			set defer date of selectedItem to startDate
 			if setDueDate then set due date of selectedItem to dueDate
 			set success to true
 		end try

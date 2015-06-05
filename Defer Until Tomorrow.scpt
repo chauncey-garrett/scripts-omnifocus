@@ -1,13 +1,13 @@
-﻿(*
+(*
 	# DESCRIPTION #
 
 	This script takes the currently selected actions or projects and sets them for action tomorrow.
-	
+
 	**IMPORTANT: Now has two modes: "Start" mode and "Due" mode. Start mode is for people
 	who use start dates to plan for the day; Due mode is for people who use Due dates for the same.
-	It is now my opinion that Start dates are more useful for day-to-day planning, but this script is 
+	It is now my opinion that Start dates are more useful for day-to-day planning, but this script is
 	intended to provide flexibility in whatever system you use.
-	
+
 	By default, this script will now set start dates, but you can change this in the settings below.**
 
 	## START MODE LOGIC ##
@@ -18,16 +18,16 @@
 	For each item:
 	-	If there's no existing due date: sets Due to tomorrow (at time specified in script settings)
 	-	If there's an existing due date: sets Due to tomorrow at the *original* due time
-	-	If there's an existing due date AND start date: advances start date by same # of days as due 
+	-	If there's an existing due date AND start date: advances start date by same # of days as due
 		date (this is to respect parameters of repeating actions)
 	-	Ignores start date if there's no due date already assigned to a task
-	
-	
+
+
 	# LICENSE #
-	
+
 	Copyright © 2009-2010 Dan Byler (contact: dbyler@gmail.com)
 	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php)
-	
+
 
 	# CHANGE HISTORY #
 
@@ -37,7 +37,7 @@
 
 	0.4 (2011-08-30)
 	-	Rewrote notification code to gracefully handle situations where Growl is not installed
-	
+
 	0.3 (2011-07-07):
 	-	New setting: "Start" or "Due" modes (see above)
 	-	No longer fails when a Grouping divider is selected
@@ -64,7 +64,7 @@
 
 	# KNOWN BUGS #
 	-	When the script is invoked from the OmniFocus toolbar and canceled, OmniFocus returns an error. This issue does not occur when invoked from the script menu, a Quicksilver trigger, etc.
-		
+
 *)
 
 --The following setting changes script mode. Options: "start" or "due" (quotes needed)
@@ -97,7 +97,7 @@ on main()
 				my notify(alertName, alertTitle, alertText)
 				return
 			end if
-			
+
 			--Perform action
 			set successTot to 0
 			set autosave to false
@@ -121,7 +121,7 @@ on main()
 			set autosave to true
 		end tell
 	end tell
-	
+
 	--Display summary notification
 	if showSummaryNotification then
 		set alertName to "General"
@@ -136,13 +136,13 @@ on startTomorrow(selectedItem, newDate)
 	set success to false
 	tell application "OmniFocus"
 		try
-			set originalStartDateTime to start date of selectedItem
+			set originalStartDateTime to defer date of selectedItem
 			if (originalStartDateTime is not missing value) then
 				--Set new start date with original start time
-				set start date of selectedItem to (newDate + (time of originalStartDateTime))
+				set defer date of selectedItem to (newDate + (time of originalStartDateTime))
 				set success to true
 			else
-				set start date of selectedItem to (newDate + (startTime * hours))
+				set defer date of selectedItem to (newDate + (startTime * hours))
 				set success to true
 			end if
 		end try
@@ -161,10 +161,10 @@ on dueTomorrow(selectedItem, newDate)
 				set theDelta to (newDate - originalDueStartDate) / 86400
 				set newDueDateTime to (originalDueDateTime + (theDelta * days))
 				set due date of selectedItem to newDueDateTime
-				set originalStartDateTime to start date of selectedItem
+				set originalStartDateTime to defer date of selectedItem
 				if (originalStartDateTime is not missing value) then
 					set newStartDateTime to (originalStartDateTime + (theDelta * days))
-					set start date of selectedItem to newStartDateTime
+					set defer date of selectedItem to newStartDateTime
 				end if
 				set success to true
 			else

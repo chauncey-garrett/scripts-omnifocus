@@ -1,13 +1,13 @@
-﻿(*
+(*
 	# DESCRIPTION #
 
 	This script sums the estimated times of currently selected actions or projects.
-	
+
 
 	# LICENSE #
-	
+
 	Copyright © 2011 Dan Byler (contact: dbyler@gmail.com)
-	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php) 
+	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php)
 	(TL;DR: do whatever you want with it.)
 
 
@@ -19,7 +19,7 @@
 
 	0.3 (2011-08-30)
 	-	Rewrote notification code to gracefully handle situations where Growl is not installed
-	
+
 	0.2b (2011-07-18)
 	-	Fixed bug where time might not be displayed accurately
 		(Thanks to Ricardo Matias for the bug report)
@@ -27,7 +27,7 @@
 	0.2 (2011-07-07):
 	-	Streamlined calls to OmniFocus with Rob Trew's input (Thanks, Rob!)
 	-	Reorganized script for better readability
-	
+
 	0.1: Initial release
 
 
@@ -39,7 +39,7 @@
 
 	# KNOWN BUGS #
 	-	None
-		
+
 *)
 
 -- To change settings, modify the following property
@@ -65,7 +65,7 @@ on main()
 				my notify(alertName, alertTitle, alertText)
 				return
 			end if
-			
+
 			--Perform action
 			repeat with thisItem in validSelectedItemsList
 				set thisEstimate to estimated minutes of thisItem
@@ -75,7 +75,7 @@ on main()
 			set totalHours to (totalMinutes div 60)
 		end tell
 	end tell
-	
+
 	--Show summary notification
 	if totalItems is 1 then
 		set itemSuffix to ""
@@ -148,3 +148,4 @@ end notifyMain
 (* end notification code *)
 
 main()
+

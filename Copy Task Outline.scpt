@@ -1,5 +1,5 @@
 --
--- Copy task outline to clipboard
+-- OmniFocus - copy task outline to clipboard
 --
 
 tell application "OmniFocus"
@@ -30,3 +30,4 @@ on printTree(node, indent)
 	end tell
 	return output
 end printTree
+

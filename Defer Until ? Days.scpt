@@ -1,57 +1,57 @@
-﻿(*
+(*
 	# DESCRIPTION #
-	
-	This script "snoozes" the currently selected actions or projects by setting the start date to 
+
+	This script "snoozes" the currently selected actions or projects by setting the start date to
 	given number of days in the future.
-	
-	
+
+
 	# LICENSE #
-	
+
 	Copyright © 2010 Dan Byler (contact: dbyler@gmail.com)
 	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php)
 	(TL;DR: no warranty, do whatever you want with it.)
-	
-	
+
+
 	# CHANGE HISTORY #
-	
+
 	0.41 (2011-10-31)
 	-	Updated Growl code to work with Growl 1.3 (App Store version)
 	-	Updated tell syntax to call "first document window", not "front document window"
-	
+
 	0.4 (2011-08-30)
 	-	Rewrote notification code to gracefully handle situations where Growl is not installed
 	-	Changed "The item/The items" to "It/They"
-	
+
 	0.3 (2011-07-07)
 	-	New option to set start time (default: 8am)
 	-	Reorganized; incorporated Rob Trew's method to get items from OmniFocus
 	-	No longer fails when a Grouping divider is selected
 	-	Fixes potential issue when launching from OmniFocus toolbar
-	
+
 	0.2c (2010-06-22)
 	-	Actual fix for autosave
-	
+
 	0.2b (2010-06-21)
 	-	Encapsulated autosave in "try" statements in case this fails
-	
+
 	0.2 (2010-06-15)
 	-	Fixed Growl code
 	-	Added performance optimization (thanks, Curt Clifton)
 	-	Changed from LGPL to MIT license (MIT is less restrictive)
-		
+
 	0.1: Original release. (Thanks to Curt Clifton, Nanovivid, and Macfaninpdx for various pieces of code)
 
-	
+
 	# INSTALLATION #
-	
+
 	-	Copy to ~/Library/Scripts/Applications/Omnifocus
  	-	If desired, add to the OmniFocus toolbar using View > Customize Toolbar... within OmniFocus
 
-	
+
 	# KNOWN ISSUES #
 	-	When the script is invoked from the OmniFocus toolbar and canceled, OmniFocus displays an alert.
 		This does not occur when invoked from another launcher (script menu, FastScripts LaunchBar, etc).
-		
+
 *)
 
 -- To change settings, modify the following properties
@@ -81,11 +81,11 @@ on main()
 				my notify(alertName, alertTitle, alertText)
 				return
 			end if
-			
+
 			--User options
 			display dialog "Snooze for how many days (from today)?" default answer defaultOffset buttons {"Cancel", "OK"} default button 2
 			set daysOffset to (the text returned of the result) as integer
-			
+
 			--Perform action
 			set todayStart to (current date) - (get time of (current date)) + (defaultStartTime * 3600)
 			set successTot to 0
@@ -97,7 +97,7 @@ on main()
 			set autosave to true
 		end tell
 	end tell
-	
+
 	--Display summary notification
 	if showSummaryNotification then
 		set alertName to "General"
@@ -116,7 +116,7 @@ on snooze(selectedItem, todayStart, daysOffset)
 	set success to false
 	tell application "OmniFocus"
 		try
-			set start date of selectedItem to my offsetDateByDays(todayStart, daysOffset)
+			set defer date of selectedItem to my offsetDateByDays(todayStart, daysOffset)
 			set success to true
 		end try
 	end tell
@@ -186,3 +186,4 @@ on notifyMain(alertName, alertTitle, alertText, useSticky)
 end notifyMain
 (* end notification code *)
 main()
+

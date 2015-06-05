@@ -1,5 +1,5 @@
 --
--- Test if there are items in the inbox
+-- OmniFocus - test if there are items in the inbox
 --
 
 tell application "OmniFocus"
@@ -11,5 +11,4 @@ tell application "OmniFocus"
 		end if
 	end tell
 end tell
-
 

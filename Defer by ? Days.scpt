@@ -1,55 +1,55 @@
-﻿(*
+(*
 	# DESCRIPTION #
-	
+
 	This script takes the currently selected actions or projects and offsets their dates by the
 	user-specified number of days. The user may defer just the due date or both the start and
 	due dates (useful for skipping weekends for daily recurring tasks).
-	
-	
+
+
 	# LICENSE #
 
 	Copyright © 2008-2011 Dan Byler (contact: dbyler@gmail.com)
 	Licensed under MIT License (http://www.opensource.org/licenses/mit-license.php)
 	(TL;DR: no warranty, do whatever you want with it.)
 
-	
+
 	# CHANGE HISTORY#
-	
+
 	0.7 (2011-10-31)
 	-	Now has "Start Only" mode that only modifies start dates. To use, set promptForChangeScope to false
 		and changeScope to "Start Only"
 	-	Updated Growl code to work with Growl 1.3 (App Store version)
 	-	Updated tell syntax to call "first document window", not "front document window"
-	
+
 	0.6 (2011-08-30)
 	-	Rewrote notification code to gracefully handle situations where Growl is not installed
 	-	Changed default promptForChangeScope to False
-	
+
 	0.5 (2011-07-14)
-	-	Now warns for mismatches between "actual" and "effective" Start and Due dates. Such mismatches 
+	-	Now warns for mismatches between "actual" and "effective" Start and Due dates. Such mismatches
 		occur if a parent or ancestor item has an earlier Due date (or later Start date) than the selected item.
 		This warning can be suppressed by setting "warnOnDateMismatch" property to "false".
 
 	-	New "promptForChangeScope" setting lets users bypass the second dialog box if they always change
 		the same parameters (Start AND Due dates, or just Due dates). Default setting: enabled.
-	
+
 	0.4 (2011-07-07)
 	-	New option to set start time (Default: 8am)
 	-	New snoozeUnscheduledItems option (default: True) lets you push the start date of unscheduled items.
 	-	No longer fails when a Grouping divider is selected
 	-	Reorganized; incorporated Rob Trew's method to get items from OmniFocus
 	-	Fixes potential issue when launching from OmniFocus toolbar
-	
+
 	0.3c (2010-06-21)
 		-	Actual fix for autosave
-	
+
 	0.3b (2010-06-21)
 		-	Encapsulated autosave in "try" statements in case this fails
-	
+
 	0.3 (2010-06-15)
 		-	Incorporated another improvement from Curt Clifton to increase performance
 		-	Reinstated original Growl code since the Growl-agnostic code broke in Snow Leopard
-	
+
 	0.2
 		-	Incorporated Curt Clifton's bug fixes to make script more reliable when dealing with multiple items.
 			Thanks, Curt!
@@ -57,12 +57,12 @@
 		-	Defers both start and due dates by default.
 		-	Incorporates new method that doesn't call Growl directly. This code should be friendly for machines
 			that don't have Growl installed. In my testing, I found that GrowlHelperApp crashes on nearly 10%
-			of AppleScript calls, so the script checks for GrowlHelperApp and launches it if not running. (Thanks 
-			to Nanovivid from forums.cocoaforge.com/viewtopic.php?p=32584 and Macfaninpdx from 
+			of AppleScript calls, so the script checks for GrowlHelperApp and launches it if not running. (Thanks
+			to Nanovivid from forums.cocoaforge.com/viewtopic.php?p=32584 and Macfaninpdx from
 			forums.macrumors.com/showthread.php?t=423718 for the information needed to get this working
-		-	All that said... if you run from the toolbar frequently, I'd recommend  turning alerts off since Growl 
+		-	All that said... if you run from the toolbar frequently, I'd recommend  turning alerts off since Growl
 			slows down the script so much
-		
+
 	0.1: Original release
 
 
@@ -111,7 +111,7 @@ on main()
 				my notify(alertName, alertTitle, alertText)
 				return
 			end if
-			
+
 			--User options
 			display dialog "Defer for how many days (from existing)?" default answer defaultOffset buttons {"Cancel", "OK"} default button 2
 			set daysOffset to (the text returned of the result) as integer
@@ -131,7 +131,7 @@ on main()
 				set modifyStartDate to true
 				set modifyDueDate to false
 			end if
-			
+
 			--Perform action
 			set successTot to 0
 			set autosave to false
@@ -143,7 +143,7 @@ on main()
 			set autosave to true
 		end tell
 	end tell
-	
+
 	--Display summary notification
 	if showSummaryNotification then
 		set alertName to "General"
@@ -159,13 +159,13 @@ on defer(selectedItem, daysOffset, modifyStartDate, modifyDueDate, todayStart)
 	set success to false
 	tell application "OmniFocus"
 		try
-			set realStartDate to start date of selectedItem
-			set {startAncestor, effectiveStartDate} to my getEffectiveStartDate(selectedItem, start date of selectedItem)
+			set realStartDate to defer date of selectedItem
+			set {startAncestor, effectiveStartDate} to my getEffectiveStartDate(selectedItem, defer date of selectedItem)
 			set realDueDate to due date of selectedItem
 			set {dueAncestor, effectiveDueDate} to my getEffectiveDueDate(selectedItem, due date of selectedItem)
 			if modifyStartDate then
 				if (realStartDate is not missing value) then --There's a preexisting start date
-					set start date of selectedItem to my offsetDateByDays(realStartDate, daysOffset)
+					set defer date of selectedItem to my offsetDateByDays(realStartDate, daysOffset)
 					if warnOnDateMismatch then
 						if realStartDate is not effectiveStartDate then
 							set alertText to "«" & (name of contents of selectedItem) & ¬
@@ -190,9 +190,9 @@ on defer(selectedItem, daysOffset, modifyStartDate, modifyDueDate, todayStart)
 					end if
 				end if
 			else if snoozeUnscheduledItems then
-				if start date of selectedItem is missing value then
+				if defer date of selectedItem is missing value then
 					set test to my offsetDateByDays(todayStart, daysOffset)
-					set start date of selectedItem to my offsetDateByDays(todayStart, daysOffset)
+					set defer date of selectedItem to my offsetDateByDays(todayStart, daysOffset)
 				end if
 			end if
 			set success to true
@@ -221,11 +221,11 @@ end getEffectiveDueDate
 
 on getEffectiveStartDate(thisItem, effectiveStartDate)
 	tell application "OmniFocus"
-		if start date of thisItem is not missing value then
+		if defer date of thisItem is not missing value then
 			if effectiveStartDate is missing value then
-				set effectiveStartDate to start date of thisItem
-			else if start date of thisItem is greater than effectiveStartDate then
-				set effectiveStartDate to start date of thisItem
+				set effectiveStartDate to defer date of thisItem
+			else if defer date of thisItem is greater than effectiveStartDate then
+				set effectiveStartDate to defer date of thisItem
 			end if
 		end if
 		if parent task of thisItem is missing value then
@@ -301,3 +301,4 @@ end notifyMain
 (* end notification code *)
 
 main()
+

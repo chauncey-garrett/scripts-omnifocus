@@ -1,5 +1,5 @@
 --
--- Move to top of list
+-- OmniFocus - move to beginning of list
 --
 
 tell application "OmniFocus"
@@ -12,3 +12,4 @@ tell application "OmniFocus"
 		end repeat
 	end tell
 end tell
+
